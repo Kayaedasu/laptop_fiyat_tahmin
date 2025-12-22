@@ -1,0 +1,7 @@
+# Python 3.13+ uyumlu versiyonlar (güncel)
+flask
+joblib
+numpy
+scikit-learn
+pandas
+requests

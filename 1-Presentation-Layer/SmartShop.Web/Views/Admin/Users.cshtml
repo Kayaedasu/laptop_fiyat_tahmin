@@ -1,0 +1,200 @@
+@model List<SmartShop.Business.DTOs.UserDto>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5"><i class="bi bi-people"></i> Kullanıcı Yönetimi</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Kullanıcılar</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-list"></i> Tüm Kullanıcılar (@Model.Count adet)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ad Soyad</th>
+                                        <th>E-posta</th>
+                                        <th>Telefon</th>
+                                        <th>Rol</th>
+                                        <th>Durum</th>
+                                        <th>Kayıt Tarihi</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.OrderByDescending(u => u.CreatedAt))
+                                    {
+                                        <tr>
+                                            <td><strong>#@user.UserId</strong></td>
+                                            <td>@user.FirstName @user.LastName</td>
+                                            <td>@user.Email</td>
+                                            <td>@(user.PhoneNumber ?? "-")</td>
+                                            <td>
+                                                @if (user.Role == "Admin")
+                                                {
+                                                    <span class="badge bg-danger">Admin</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-primary">Customer</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (user.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Pasif</span>
+                                                }
+                                            </td>
+                                            <td><small>@user.CreatedAt.ToString("dd MMM yyyy")</small></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-action="EditUser" asp-route-id="@user.UserId" 
+                                                       class="btn btn-outline-primary" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    @if (user.Role != "Admin")
+                                                    {
+                                                        <button type="button" class="btn btn-outline-danger btn-delete-user" 
+                                                                data-user-id="@user.UserId" 
+                                                                data-user-name="@user.FirstName @user.LastName"
+                                                                title="Sil">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Henüz kullanıcı bulunmamaktadır.
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Kullanıcıyı Sil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Aşağıdaki kullanıcıyı silmek istediğinizden emin misiniz?</p>
+                <div class="alert alert-warning">
+                    <strong id="deleteUserName"></strong>
+                </div>
+                <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Bu işlem geri alınamaz!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x"></i> İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="bi bi-trash"></i> Evet, Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let deleteUserId = null;
+
+        // Silme butonuna tıklandığında
+        document.querySelectorAll('.btn-delete-user').forEach(btn => {
+            btn.addEventListener('click', function() {
+                deleteUserId = this.getAttribute('data-user-id');
+                const userName = this.getAttribute('data-user-name');
+                
+                document.getElementById('deleteUserName').textContent = userName;
+                
+                const modal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+                modal.show();
+            });
+        });
+
+        // Silme işlemini onayla
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (!deleteUserId) return;
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Siliniyor...';
+
+            // Anti-forgery token'ı al
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+            // Form data olarak gönder
+            const formData = new FormData();
+            formData.append('id', deleteUserId);
+            formData.append('__RequestVerificationToken', token);
+
+            fetch('@Url.Action("DeleteUser", "Admin")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Modal'ı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide();
+                    
+                    // Başarı mesajı göster
+                    alert('✅ ' + data.message);
+                    
+                    // Sayfayı yenile
+                    location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-trash"></i> Evet, Sil';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-trash"></i> Evet, Sil';
+            });
+        });
+    </script>
+}
+
+@* Anti-forgery token for AJAX requests *@
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>

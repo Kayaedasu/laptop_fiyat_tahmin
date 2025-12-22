@@ -1,0 +1,146 @@
+@model SmartShop.Business.DTOs.CartViewDto
+
+@{
+    ViewData["Title"] = "Alışveriş Sepeti";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4"><i class="bi bi-cart3"></i> Alışveriş Sepeti</h1>
+
+    @if (Model != null && Model.Items != null && Model.Items.Any())
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Ürün</th>
+                                        <th>Fiyat</th>
+                                        <th>Miktar</th>
+                                        <th>Ara Toplam</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                    {
+                                                        <img src="@item.ImageUrl" alt="@item.ProductName" class="me-3 rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="bg-light me-3 rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                            <i class="bi bi-laptop text-muted"></i>
+                                                        </div>
+                                                    }
+                                                    <div>
+                                                        <h6 class="mb-0">@item.ProductName</h6>
+                                                        <small class="text-muted">@item.CategoryName</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="fw-bold">$@item.Price.ToString("N2")</td>
+                                            <td>
+                                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-inline">
+                                                    <input type="hidden" name="cartId" value="@item.CartId" />
+                                                    <div class="input-group" style="width: 130px;">
+                                                        <button type="submit" name="quantity" value="@(item.Quantity - 1)" class="btn btn-sm btn-outline-secondary" @(item.Quantity <= 1 ? "disabled" : "")>
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                        <input type="text" class="form-control form-control-sm text-center" value="@item.Quantity" readonly>
+                                                        <button type="submit" name="quantity" value="@(item.Quantity + 1)" class="btn btn-sm btn-outline-secondary">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td class="fw-bold text-primary">$@((item.Price * item.Quantity).ToString("N2"))</td>
+                                            <td>
+                                                <form asp-controller="Cart" asp-action="RemoveFromCart" method="post" class="d-inline">
+                                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu ürünü sepetten çıkarmak istiyor musunuz?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Alışverişe Devam Et
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Sipariş Özeti</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Ürünler (@Model.Items.Count):</span>
+                            <span>$@Model.TotalPrice.ToString("N2")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Kargo:</span>
+                            <span class="text-success">ÜCRETSİZ</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Toplam:</strong>
+                            <strong class="text-primary fs-4">$@Model.TotalPrice.ToString("N2")</strong>
+                        </div>
+                        
+                        @if (Context.Session.GetInt32("UserId") != null)
+                        {
+                            <div class="d-grid">
+                                <a asp-controller="Orders" asp-action="Checkout" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-credit-card"></i> Ödemeye Geç
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Ödeme yapmak için lütfen <a asp-controller="Account" asp-action="Login">giriş yapın</a>.
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-shield-check"></i> Güvenli Ödeme</h6>
+                        <ul class="list-unstyled small text-muted mb-0">
+                            <li><i class="bi bi-check-circle text-success"></i> Güvenli ve emniyetli ödemeler</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 30 günlük iade politikası</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 100 TL üzeri ücretsiz kargo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-cart-x text-muted" style="font-size: 100px;"></i>
+            <h2 class="mt-4">Sepetiniz boş</h2>
+            <p class="text-muted">Başlamak için birkaç ürün ekleyin!</p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary mt-3">
+                <i class="bi bi-shop"></i> Ürünlere Göz At
+            </a>
+        </div>
+    }
+</div>

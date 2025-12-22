@@ -1,0 +1,143 @@
+@model IEnumerable<SmartShop.Business.DTOs.ProductDto>
+
+@{
+    ViewData["Title"] = "Ürünler";
+    var categories = ViewBag.Categories as List<SmartShop.Business.DTOs.CategoryDto>;
+    var selectedCategory = ViewBag.SelectedCategoryId as int?;
+}
+
+<div class="container py-4">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-md-3">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-funnel"></i> Filtreler</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Category Filter -->
+                    <h6 class="fw-bold">Kategoriler</h6>
+                    <div class="list-group mb-3">
+                        <a asp-controller="Products" asp-action="Index" 
+                           class="list-group-item list-group-item-action @(selectedCategory == null ? "active" : "")">
+                            Tüm Ürünler
+                        </a>
+                        @if (categories != null)
+                        {
+                            @foreach (var category in categories)
+                            {
+                                <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.CategoryId"
+                                   class="list-group-item list-group-item-action @(selectedCategory == category.CategoryId ? "active" : "")">
+                                    @category.Name
+                                </a>
+                            }
+                        }
+                    </div>
+
+                    <!-- Search Form -->
+                    <h6 class="fw-bold">Ara</h6>
+                    <form asp-controller="Products" asp-action="Index" method="get">
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Ürün ara..." value="@ViewBag.SearchQuery">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>@(selectedCategory != null ? categories?.FirstOrDefault(c => c.CategoryId == selectedCategory)?.Name : "Tüm Ürünler")</h2>
+                <span class="text-muted">@Model?.Count() ürün bulundu</span>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card h-100 shadow-sm product-card">
+                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="bi bi-laptop text-muted" style="font-size: 4rem;"></i>
+                                    </div>
+                                }
+                                <div class="card-body">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text text-muted small">@product.CategoryName</p>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-primary fw-bold fs-5">$@product.Price.ToString("N2")</span>
+                                        @if (product.AverageRating > 0)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-star-fill"></i> @product.AverageRating.ToString("F1")
+                                            </span>
+                                        }
+                                    </div>
+                                    @if (product.StockQuantity > 0)
+                                    {
+                                        <span class="badge bg-success">Stokta (@product.StockQuantity)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Stok Tükendi</span>
+                                    }
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <div class="d-grid gap-2">
+                                        <a asp-controller="Products" 
+                                           asp-action="Details" 
+                                           asp-route-id="@product.ProductId" 
+                                           class="btn btn-outline-primary btn-sm"
+                                           onclick="console.log('Clicking product:', @product.ProductId)">
+                                            <i class="bi bi-eye"></i> Detayları Gör
+                                        </a>
+                                        @if (product.StockQuantity > 0)
+                                        {
+                                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                                <input type="hidden" name="productId" value="@product.ProductId" />
+                                                <input type="hidden" name="quantity" value="1" />
+                                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                    <i class="bi bi-cart-plus"></i> Sepete Ekle
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Ürün bulunamadı. Filtreleri ayarlayarak tekrar deneyin.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+        }
+    </style>
+}

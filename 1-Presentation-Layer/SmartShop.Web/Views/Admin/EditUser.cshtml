@@ -1,0 +1,140 @@
+@model SmartShop.Business.DTOs.UserDto
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5"><i class="bi bi-pencil-square"></i> Kullanıcı Düzenle</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Users">Kullanıcılar</a></li>
+                    <li class="breadcrumb-item active">Düzenle</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Kullanıcı Bilgileri</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle display-1 text-info"></i>
+                    </div>
+                    <h5 class="mb-1">@Model.FirstName @Model.LastName</h5>
+                    <p class="text-muted mb-2">@Model.Email</p>
+                    <p class="mb-2">
+                        @if (Model.Role == "Admin")
+                        {
+                            <span class="badge bg-danger"><i class="bi bi-shield-fill"></i> Admin</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary"><i class="bi bi-person-fill"></i> Customer</span>
+                        }
+                    </p>
+                    <p class="mb-0">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pasif</span>
+                        }
+                    </p>
+                    <hr>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar"></i> Kayıt: @Model.CreatedAt.ToString("dd MMM yyyy")
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-pencil"></i> Kullanıcı Bilgilerini Düzenle</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditUser" method="post">
+                        <input type="hidden" name="UserId" value="@Model.UserId" />
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="FirstName" class="form-label">Ad <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="FirstName" name="FirstName" 
+                                       value="@Model.FirstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="LastName" class="form-label">Soyad <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="LastName" name="LastName" 
+                                       value="@Model.LastName" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">E-posta <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="Email" name="Email" 
+                                   value="@Model.Email" required>
+                            <small class="text-muted">Admin e-posta adresini değiştirebilir</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="PhoneNumber" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" 
+                                   value="@Model.PhoneNumber" placeholder="+90 5XX XXX XX XX">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Role" class="form-label">Rol <span class="text-danger">*</span></label>
+                            <select class="form-select" id="Role" name="Role" required>
+                                <option value="Customer" selected="@(Model.Role == "Customer")">
+                                    Customer (Müşteri)
+                                </option>
+                                <option value="Admin" selected="@(Model.Role == "Admin")">
+                                    Admin (Yönetici)
+                                </option>
+                            </select>
+                            <small class="text-muted">Kullanıcının sistem rolünü değiştirebilirsiniz</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="IsActive" class="form-label">Hesap Durumu <span class="text-danger">*</span></label>
+                            <select class="form-select" id="IsActive" name="IsActive" required>
+                                <option value="true" selected="@Model.IsActive">
+                                    Aktif
+                                </option>
+                                <option value="false" selected="@(!Model.IsActive)">
+                                    Pasif
+                                </option>
+                            </select>
+                            <small class="text-muted">Hesap durumunu değiştirebilirsiniz</small>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Users" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Geri Dön
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

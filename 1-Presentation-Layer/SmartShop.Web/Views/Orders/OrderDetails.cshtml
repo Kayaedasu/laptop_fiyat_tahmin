@@ -1,0 +1,200 @@
+@model SmartShop.Business.DTOs.OrderDetailViewDto
+
+@{
+    ViewData["Title"] = "Sipariş Detayları";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+            <li class="breadcrumb-item"><a asp-action="MyOrders">Siparişlerim</a></li>
+            <li class="breadcrumb-item active">Sipariş #@Model.OrderId</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-box-seam"></i> Sipariş #@Model.OrderId</h1>
+        @if (Model.Status == "Pending")
+        {
+            <span class="badge bg-warning fs-6">Beklemede</span>
+        }
+        else if (Model.Status == "Processing")
+        {
+            <span class="badge bg-info fs-6">İşleniyor</span>
+        }
+        else if (Model.Status == "Shipped")
+        {
+            <span class="badge bg-primary fs-6">Kargoda</span>
+        }
+        else if (Model.Status == "Delivered")
+        {
+            <span class="badge bg-success fs-6">Teslim Edildi</span>
+        }
+        else if (Model.Status == "Cancelled")
+        {
+            <span class="badge bg-danger fs-6">İptal Edildi</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary fs-6">@Model.Status</span>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Sipariş Ürünleri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Ürün</th>
+                                    <th>Fiyat</th>
+                                    <th>Adet</th>
+                                    <th>Ara Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-light me-3 rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                        <i class="bi bi-laptop text-muted"></i>
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <h6 class="mb-0">@item.ProductName</h6>
+                                                    <small class="text-muted">@item.CategoryName</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>₺@item.Price.ToString("N2")</td>
+                                        <td>@item.Quantity</td>
+                                        <td class="fw-bold">₺@((item.Price * item.Quantity).ToString("N2"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ShippingAddress))
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-truck"></i> Kargo Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@Model.ShippingAddress</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Sipariş Özeti</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Sipariş Tarihi:</span>
+                        <span>@Model.OrderDate.ToString("dd MMM yyyy")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Ürünler:</span>
+                        <span>@Model.Items.Count</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Ödeme:</span>
+                        <span>@(Model.PaymentMethod switch
+                        {
+                            "Credit Card" => "Kredi Kartı",
+                            "Debit Card" => "Banka Kartı",
+                            "Cash on Delivery" => "Kapıda Ödeme",
+                            "Bank Transfer" => "Havale/EFT",
+                            _ => Model.PaymentMethod
+                        })</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Ara Toplam:</span>
+                        <span>₺@Model.TotalAmount.ToString("N2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Kargo:</span>
+                        <span class="text-success">ÜCRETSİZ</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Toplam:</strong>
+                        <strong class="text-primary fs-4">₺@Model.TotalAmount.ToString("N2")</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6><i class="bi bi-info-circle"></i> Sipariş Durumu</h6>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Sipariş Verildi
+                            <br><small class="text-muted ms-4">@Model.OrderDate.ToString("dd MMM yyyy")</small>
+                        </li>
+                        @if (Model.Status == "Processing" || Model.Status == "Shipped" || Model.Status == "Delivered")
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i> İşleniyor
+                            </li>
+                        }
+                        @if (Model.Status == "Shipped" || Model.Status == "Delivered")
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i> Kargoya Verildi
+                            </li>
+                        }
+                        @if (Model.Status == "Delivered")
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success"></i> Teslim Edildi
+                            </li>
+                        }
+                        @if (Model.Status == "Cancelled")
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-x-circle-fill text-danger"></i> İptal Edildi
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-3">
+                <a asp-action="MyOrders" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Siparişlere Dön
+                </a>
+                @if (Model.Status == "Pending")
+                {
+                    <form asp-action="CancelOrder" asp-route-id="@Model.OrderId" method="post" onsubmit="return confirm('Bu siparişi iptal etmek istediğinizden emin misiniz?');">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-x-circle"></i> Siparişi İptal Et
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

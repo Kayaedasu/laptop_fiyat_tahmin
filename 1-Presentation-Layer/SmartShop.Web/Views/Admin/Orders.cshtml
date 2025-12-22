@@ -1,0 +1,95 @@
+@model List<SmartShop.Business.DTOs.OrderDto>
+@{
+    ViewData["Title"] = "Sipariş Yönetimi";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5"><i class="bi bi-cart-check"></i> Sipariş Yönetimi</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Siparişler</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-list"></i> Tüm Siparişler (@Model.Count adet)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Sipariş No</th>
+                                        <th>Müşteri</th>
+                                        <th>Tarih</th>
+                                        <th>Durum</th>
+                                        <th>Ödeme</th>
+                                        <th>Tutar</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+                                    {
+                                        <tr>
+                                            <td><strong class="text-primary">#@order.OrderId</strong></td>
+                                            <td>
+                                                <div>
+                                                    <strong>@order.UserName</strong><br />
+                                                    <small class="text-muted">@order.UserEmail</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small>@order.OrderDate.ToString("dd MMM yyyy HH:mm")</small>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var badgeClass = order.Status switch
+                                                    {
+                                                        "Pending" => "bg-warning",
+                                                        "Processing" => "bg-info",
+                                                        "Shipped" => "bg-primary",
+                                                        "Delivered" => "bg-success",
+                                                        "Cancelled" => "bg-danger",
+                                                        _ => "bg-secondary"
+                                                    };
+                                                }
+                                                <span class="badge @badgeClass">@order.Status</span>
+                                            </td>
+                                            <td>@order.PaymentMethod</td>
+                                            <td><strong class="text-success">₺@order.TotalAmount.ToString("N2")</strong></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.OrderId" 
+                                                       class="btn btn-outline-primary" title="Detayları Gör">
+                                                        <i class="bi bi-eye"></i> Detaylar
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Henüz sipariş bulunmamaktadır.
+        </div>
+    }
+</div>

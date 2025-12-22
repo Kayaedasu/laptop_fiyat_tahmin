@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "SmartShop - Premium Dizüstü Bilgisayarlar ve Bilgisayarlar";
+    var featuredProducts = ViewBag.FeaturedProducts as List<SmartShop.Business.DTOs.ProductDto>;
+    var categories = ViewBag.Categories as List<SmartShop.Business.DTOs.CategoryDto>;
+}
+
+<!-- Hero Section -->
+<div class="hero-section bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4">SmartShop'a Hoş Geldiniz</h1>
+                <p class="lead mb-4">Son teknoloji dizüstü bilgisayarlar ve bilgisayarları keşfedin. Premium kalite, rekabetçi fiyatlar.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-light btn-lg">Hemen Alışveriş Yap</a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-laptop" style="font-size: 200px;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+@if (categories != null && categories.Any())
+{
+    <div class="container mb-5">
+        <h2 class="text-center mb-4">Kategoriye Göre Alışveriş Yap</h2>
+        <div class="row g-3">
+            @foreach (var category in categories)
+            {
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 shadow-sm category-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-tag-fill text-primary" style="font-size: 3rem;"></i>
+                            <h5 class="card-title mt-3">@category.Name</h5>
+                            @if (!string.IsNullOrEmpty(category.Description))
+                            {
+                                <p class="card-text text-muted small">@category.Description</p>
+                            }
+                            <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.CategoryId" 
+                               class="btn btn-outline-primary btn-sm mt-2">Ürünleri Gör</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Featured Products Section -->
+@if (featuredProducts != null && featuredProducts.Any())
+{
+    <div class="container mb-5">
+        <h2 class="text-center mb-4">Öne Çıkan Ürünler</h2>
+        <div class="row g-4">
+            @foreach (var product in featuredProducts)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm product-card">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="bi bi-laptop text-muted" style="font-size: 4rem;"></i>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text text-muted small">@product.CategoryName</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold fs-5">$@product.Price.ToString("N2")</span>
+                                @if (product.AverageRating > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-star-fill"></i> @product.AverageRating.ToString("N1")
+                                    </span>
+                                }
+                            </div>
+                            @if (product.StockQuantity > 0)
+                            {
+                                <span class="badge bg-success mt-2">Stokta (@product.StockQuantity)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger mt-2">Stok Tükendi</span>
+                            }
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" 
+                               class="btn btn-primary btn-sm w-100">Detayları Gör</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">Tüm Ürünleri Gör</a>
+        </div>
+    </div>
+}
+
+<!-- Features Section -->
+<div class="container-fluid bg-light py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <i class="bi bi-truck text-primary" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Ücretsiz Kargo</h5>
+                <p class="text-muted">100 TL üzeri siparişlerde</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Güvenli Ödeme</h5>
+                <p class="text-muted">%100 güvenli işlem</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="bi bi-arrow-clockwise text-primary" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">30 Gün İade</h5>
+                <p class="text-muted">Kolay iade politikası</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="bi bi-headset text-primary" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">7/24 Destek</h5>
+                <p class="text-muted">Özel destek ekibi</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        
+        .product-card, .category-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover, .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+        }
+    </style>
+}

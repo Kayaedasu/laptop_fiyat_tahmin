@@ -1,0 +1,267 @@
+@model SmartShop.Business.DTOs.UpdateProductDto
+
+@{
+    ViewData["Title"] = "Ürün Düzenle";
+    var categories = ViewBag.Categories as List<SmartShop.Business.DTOs.CategoryDto> ?? new List<SmartShop.Business.DTOs.CategoryDto>();
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-pencil-square"></i> Ürün Düzenle</h1>
+        <a asp-action="Products" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Ürünlere Dön
+        </a>
+    </div>
+
+    <form asp-action="EditProduct" method="post" id="productForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        
+        <div class="row">
+            <!-- Sol Kolon: Temel Bilgiler -->
+            <div class="col-lg-8">
+                <!-- Genel Bilgiler -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> General Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g., Dell XPS 15" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Product description..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Brand" class="form-label">Brand</label>
+                                <input asp-for="Brand" class="form-control" placeholder="e.g., Dell, HP, Lenovo" />
+                                <span asp-validation-for="Brand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Model" class="form-label">Model</label>
+                                <input asp-for="Model" class="form-control" placeholder="e.g., XPS 15" />
+                                <span asp-validation-for="Model" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            <small class="form-text text-muted">Enter the image URL for the product</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Özellikler -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-cpu"></i> Technical Specifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Processor" class="form-label">Processor (CPU)</label>
+                                <input asp-for="Processor" class="form-control" placeholder="e.g., Intel Core i7-11800H" />
+                                <span asp-validation-for="Processor" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GPU" class="form-label">Graphics Card (GPU)</label>
+                                <input asp-for="GPU" class="form-control" placeholder="e.g., NVIDIA RTX 3060" />
+                                <span asp-validation-for="GPU" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="RAM" class="form-label">RAM (GB) <span class="text-danger">*</span></label>
+                                <input asp-for="RAM" type="number" min="0" class="form-control" placeholder="e.g., 16" required />
+                                <span asp-validation-for="RAM" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Storage" class="form-label">Storage (GB) <span class="text-danger">*</span></label>
+                                <input asp-for="Storage" type="number" min="0" class="form-control" placeholder="e.g., 512" required />
+                                <span asp-validation-for="Storage" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StorageType" class="form-label">Storage Type</label>
+                                <select asp-for="StorageType" class="form-select">
+                                    <option value="SSD">SSD</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="SSD+HDD">SSD + HDD</option>
+                                </select>
+                                <span asp-validation-for="StorageType" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ScreenSize" class="form-label">Screen Size (inch)</label>
+                                <input asp-for="ScreenSize" type="number" step="0.1" min="0" class="form-control" placeholder="e.g., 15.6" />
+                                <span asp-validation-for="ScreenSize" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Resolution" class="form-label">Resolution</label>
+                                <input asp-for="Resolution" class="form-control" placeholder="e.g., 1920x1080 (Full HD)" />
+                                <span asp-validation-for="Resolution" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Condition" class="form-label">Product Condition</label>
+                                <select asp-for="Condition" class="form-select">
+                                    <option value="New">New</option>
+                                    <option value="Used">Used</option>
+                                    <option value="Refurbished">Refurbished</option>
+                                </select>
+                                <span asp-validation-for="Condition" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Discount" class="form-label">Discount (%)</label>
+                                <input asp-for="Discount" type="number" step="0.01" min="0" max="100" class="form-control" placeholder="0" />
+                                <span asp-validation-for="Discount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Kolon: Fiyat ve Stok -->
+            <div class="col-lg-4">
+                <!-- Fiyat ve Stok -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-currency-dollar"></i> Pricing & Stock</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Price <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="Price" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" required />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StockQuantity" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+                            <input asp-for="StockQuantity" type="number" min="0" class="form-control" placeholder="0" required />
+                            <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-tag"></i> Category</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="CategoryId" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select asp-for="CategoryId" class="form-select" required>
+                                <option value="">-- Select Category --</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.CategoryId">@category.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Durum -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0"><i class="bi bi-toggle-on"></i> Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsActive" class="form-check-label">Active</label>
+                        </div>
+                        <small class="form-text text-muted">Active products are visible to customers</small>
+                    </div>
+                </div>
+
+                <!-- Butonlar -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle"></i> Update Product
+                    </button>
+                    <a asp-action="Products" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Form validation
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            var name = document.querySelector('input[name="Name"]').value.trim();
+            var price = parseFloat(document.querySelector('input[name="Price"]').value);
+            var stock = parseInt(document.querySelector('input[name="StockQuantity"]').value);
+            var categoryId = document.querySelector('select[name="CategoryId"]').value;
+            var ram = parseInt(document.querySelector('input[name="RAM"]').value);
+            var storage = parseInt(document.querySelector('input[name="Storage"]').value);
+            
+            if (!name) {
+                e.preventDefault();
+                alert('Product name is required!');
+                return false;
+            }
+            
+            if (price < 0) {
+                e.preventDefault();
+                alert('Price cannot be negative!');
+                return false;
+            }
+            
+            if (stock < 0) {
+                e.preventDefault();
+                alert('Stock quantity cannot be negative!');
+                return false;
+            }
+            
+            if (!categoryId) {
+                e.preventDefault();
+                alert('Please select a category!');
+                return false;
+            }
+
+            if (!ram || ram <= 0) {
+                e.preventDefault();
+                alert('RAM value is required and must be greater than 0!');
+                return false;
+            }
+
+            if (!storage || storage <= 0) {
+                e.preventDefault();
+                alert('Storage value is required and must be greater than 0!');
+                return false;
+            }
+        });
+        
+        // Price formatting
+        document.querySelector('input[name="Price"]').addEventListener('blur', function(e) {
+            if (e.target.value) {
+                e.target.value = parseFloat(e.target.value).toFixed(2);
+            }
+        });
+    </script>
+}

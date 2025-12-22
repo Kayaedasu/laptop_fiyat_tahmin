@@ -1,0 +1,71 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Presentation-Layer", "1-Presentation-Layer", "{3D128863-96C0-2DF0-C378-C4746A87C830}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-Integration-Layer", "4-Integration-Layer", "{A37E97B9-F084-6B51-6929-55331D835979}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2-Business-Layer", "2-Business-Layer", "{45EBBCFF-898F-241E-8D55-DF470DD95EB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5-Data-Access-Layer", "5-Data-Access-Layer", "{FB849B00-4252-95C1-A13F-DDCFB9424C2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.Web", "1-Presentation-Layer\SmartShop.Web\SmartShop.Web.csproj", "{D34C8F22-48A9-DDE5-2C78-2169C704B11E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.Integration", "4-Integration-Layer\SmartShop.Integration\SmartShop.Integration.csproj", "{729ABB9F-DF6E-015D-E72C-66A6F7BF4245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.IntegrationTests", "tests\SmartShop.IntegrationTests\SmartShop.IntegrationTests.csproj", "{2CAB2526-B372-CF2D-B8B9-942278591B58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SmartShop.Business", "SmartShop.Business", "{AF0101D9-60A6-DB2F-DBF1-C37EE882B5AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.Business", "2-Business-Layer\SmartShop.Business\SmartShop.Business\SmartShop.Business.csproj", "{05AC219F-E2AD-4E0D-C26E-6128283BA101}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SmartShop.DataAccess", "SmartShop.DataAccess", "{556970CF-46C0-4954-4CE9-87F1939186D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.DataAccess", "5-Data-Access-Layer\SmartShop.DataAccess\SmartShop.DataAccess\SmartShop.DataAccess.csproj", "{FEF96CA5-B44F-A51D-7033-C082E8202151}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D34C8F22-48A9-DDE5-2C78-2169C704B11E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34C8F22-48A9-DDE5-2C78-2169C704B11E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34C8F22-48A9-DDE5-2C78-2169C704B11E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34C8F22-48A9-DDE5-2C78-2169C704B11E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{729ABB9F-DF6E-015D-E72C-66A6F7BF4245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{729ABB9F-DF6E-015D-E72C-66A6F7BF4245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{729ABB9F-DF6E-015D-E72C-66A6F7BF4245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{729ABB9F-DF6E-015D-E72C-66A6F7BF4245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CAB2526-B372-CF2D-B8B9-942278591B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CAB2526-B372-CF2D-B8B9-942278591B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CAB2526-B372-CF2D-B8B9-942278591B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CAB2526-B372-CF2D-B8B9-942278591B58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05AC219F-E2AD-4E0D-C26E-6128283BA101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05AC219F-E2AD-4E0D-C26E-6128283BA101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05AC219F-E2AD-4E0D-C26E-6128283BA101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05AC219F-E2AD-4E0D-C26E-6128283BA101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF96CA5-B44F-A51D-7033-C082E8202151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF96CA5-B44F-A51D-7033-C082E8202151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF96CA5-B44F-A51D-7033-C082E8202151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF96CA5-B44F-A51D-7033-C082E8202151}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D34C8F22-48A9-DDE5-2C78-2169C704B11E} = {3D128863-96C0-2DF0-C378-C4746A87C830}
+		{729ABB9F-DF6E-015D-E72C-66A6F7BF4245} = {A37E97B9-F084-6B51-6929-55331D835979}
+		{2CAB2526-B372-CF2D-B8B9-942278591B58} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{AF0101D9-60A6-DB2F-DBF1-C37EE882B5AE} = {45EBBCFF-898F-241E-8D55-DF470DD95EB6}
+		{05AC219F-E2AD-4E0D-C26E-6128283BA101} = {AF0101D9-60A6-DB2F-DBF1-C37EE882B5AE}
+		{556970CF-46C0-4954-4CE9-87F1939186D1} = {FB849B00-4252-95C1-A13F-DDCFB9424C2E}
+		{FEF96CA5-B44F-A51D-7033-C082E8202151} = {556970CF-46C0-4954-4CE9-87F1939186D1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F1EBCBB-2D0F-41B5-BF8C-A5DA5E832D88}
+	EndGlobalSection
+EndGlobal

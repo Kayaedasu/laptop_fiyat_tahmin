@@ -1,0 +1,166 @@
+@model List<SmartShop.Business.DTOs.ProductDto>
+@{
+    ViewData["Title"] = "Ürün Yönetimi";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5"><i class="bi bi-box-seam"></i> Ürün Yönetimi</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Ürünler</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <a asp-action="CreateProduct" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Yeni Ürün Ekle
+            </a>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-list"></i> Tüm Ürünler (@Model.Count adet)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Kategori</th>
+                                        <th>Fiyat</th>
+                                        <th>Stok</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model)
+                                    {
+                                        <tr>
+                                            <td><strong>#@product.ProductId</strong></td>
+                                            <td>@product.Name</td>
+                                            <td><span class="badge bg-secondary">@product.CategoryName</span></td>
+                                            <td><strong class="text-success">₺@product.Price.ToString("N2")</strong></td>
+                                            <td>
+                                                @if (product.StockQuantity > 10)
+                                                {
+                                                    <span class="badge bg-success">@product.StockQuantity</span>
+                                                }
+                                                else if (product.StockQuantity > 0)
+                                                {
+                                                    <span class="badge bg-warning">@product.StockQuantity</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Stokta Yok</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (product.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Pasif</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-action="EditProduct" asp-route-id="@product.ProductId" class="btn btn-outline-primary" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-danger" title="Sil" onclick="deleteProduct(@product.ProductId, '@product.Name')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Henüz ürün bulunmamaktadır.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function deleteProduct(productId, productName) {
+            if (confirm('Ürünü silmek istediğinize emin misiniz?\n\nÜrün: ' + productName)) {
+                // CSRF token'ı al
+                var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                
+                // Form oluştur ve gönder
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("DeleteProduct", "Admin")';
+                
+                var inputId = document.createElement('input');
+                inputId.type = 'hidden';
+                inputId.name = 'id';
+                inputId.value = productId;
+                
+                var inputToken = document.createElement('input');
+                inputToken.type = 'hidden';
+                inputToken.name = '__RequestVerificationToken';
+                inputToken.value = token;
+                
+                form.appendChild(inputId);
+                form.appendChild(inputToken);
+                document.body.appendChild(form);
+                
+                // AJAX ile gönder
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'RequestVerificationToken': token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Hata: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Bir hata oluştu: ' + error);
+                });
+                
+                document.body.removeChild(form);
+            }
+        }
+    </script>
+    
+    <!-- CSRF Token için gizli form -->
+    <form style="display:none;">
+        @Html.AntiForgeryToken()
+    </form>
+}
+

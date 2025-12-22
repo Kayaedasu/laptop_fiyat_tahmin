@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="OrderService"
+             targetNamespace="http://smartshop.com/order"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://smartshop.com/order"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Types -->
+  <types>
+    <xsd:schema targetNamespace="http://smartshop.com/order">
+      
+      <!-- Order Type -->
+      <xsd:complexType name="Order">
+        <xsd:sequence>
+          <xsd:element name="OrderId" type="xsd:int"/>
+          <xsd:element name="UserId" type="xsd:int"/>
+          <xsd:element name="OrderDate" type="xsd:string"/>
+          <xsd:element name="TotalAmount" type="xsd:decimal"/>
+          <xsd:element name="Status" type="xsd:string"/>
+          <xsd:element name="ShippingAddress" type="xsd:string"/>
+          <xsd:element name="PaymentMethod" type="xsd:string"/>
+          <xsd:element name="CreatedAt" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- OrderItem Type -->
+      <xsd:complexType name="OrderItem">
+        <xsd:sequence>
+          <xsd:element name="OrderItemId" type="xsd:int"/>
+          <xsd:element name="OrderId" type="xsd:int"/>
+          <xsd:element name="ProductId" type="xsd:int"/>
+          <xsd:element name="ProductName" type="xsd:string"/>
+          <xsd:element name="Quantity" type="xsd:int"/>
+          <xsd:element name="UnitPrice" type="xsd:decimal"/>
+          <xsd:element name="Subtotal" type="xsd:decimal"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- OrderDetail Type -->
+      <xsd:complexType name="OrderDetail">
+        <xsd:sequence>
+          <xsd:element name="OrderId" type="xsd:int"/>
+          <xsd:element name="UserId" type="xsd:int"/>
+          <xsd:element name="UserName" type="xsd:string"/>
+          <xsd:element name="OrderDate" type="xsd:string"/>
+          <xsd:element name="TotalAmount" type="xsd:decimal"/>
+          <xsd:element name="Status" type="xsd:string"/>
+          <xsd:element name="ShippingAddress" type="xsd:string"/>
+          <xsd:element name="PaymentMethod" type="xsd:string"/>
+          <xsd:element name="Items" type="tns:ArrayOfOrderItem"/>
+          <xsd:element name="CreatedAt" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- Array Types -->
+      <xsd:complexType name="ArrayOfOrder">
+        <xsd:sequence>
+          <xsd:element name="Order" type="tns:Order" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="ArrayOfOrderItem">
+        <xsd:sequence>
+          <xsd:element name="OrderItem" type="tns:OrderItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- Request/Response Types -->
+      <xsd:element name="CreateOrderRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="UserId" type="xsd:int"/>
+            <xsd:element name="ShippingAddress" type="xsd:string"/>
+            <xsd:element name="PaymentMethod" type="xsd:string"/>
+            <xsd:element name="Items" type="tns:ArrayOfOrderItem"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="CreateOrderResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Success" type="xsd:boolean"/>
+            <xsd:element name="Message" type="xsd:string"/>
+            <xsd:element name="OrderId" type="xsd:int" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetOrderRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="OrderId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetOrderResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Success" type="xsd:boolean"/>
+            <xsd:element name="Message" type="xsd:string"/>
+            <xsd:element name="Order" type="tns:OrderDetail" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetUserOrdersRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="UserId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetUserOrdersResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Success" type="xsd:boolean"/>
+            <xsd:element name="Message" type="xsd:string"/>
+            <xsd:element name="Orders" type="tns:ArrayOfOrder" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="UpdateOrderStatusRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="OrderId" type="xsd:int"/>
+            <xsd:element name="Status" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="UpdateOrderStatusResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Success" type="xsd:boolean"/>
+            <xsd:element name="Message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="CancelOrderRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="OrderId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="CancelOrderResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Success" type="xsd:boolean"/>
+            <xsd:element name="Message" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+    </xsd:schema>
+  </types>
+
+  <!-- Messages -->
+  <message name="CreateOrderRequest">
+    <part name="parameters" element="tns:CreateOrderRequest"/>
+  </message>
+  <message name="CreateOrderResponse">
+    <part name="parameters" element="tns:CreateOrderResponse"/>
+  </message>
+
+  <message name="GetOrderRequest">
+    <part name="parameters" element="tns:GetOrderRequest"/>
+  </message>
+  <message name="GetOrderResponse">
+    <part name="parameters" element="tns:GetOrderResponse"/>
+  </message>
+
+  <message name="GetUserOrdersRequest">
+    <part name="parameters" element="tns:GetUserOrdersRequest"/>
+  </message>
+  <message name="GetUserOrdersResponse">
+    <part name="parameters" element="tns:GetUserOrdersResponse"/>
+  </message>
+
+  <message name="UpdateOrderStatusRequest">
+    <part name="parameters" element="tns:UpdateOrderStatusRequest"/>
+  </message>
+  <message name="UpdateOrderStatusResponse">
+    <part name="parameters" element="tns:UpdateOrderStatusResponse"/>
+  </message>
+
+  <message name="CancelOrderRequest">
+    <part name="parameters" element="tns:CancelOrderRequest"/>
+  </message>
+  <message name="CancelOrderResponse">
+    <part name="parameters" element="tns:CancelOrderResponse"/>
+  </message>
+
+  <!-- Port Type -->
+  <portType name="OrderServicePortType">
+    <operation name="CreateOrder">
+      <input message="tns:CreateOrderRequest"/>
+      <output message="tns:CreateOrderResponse"/>
+    </operation>
+
+    <operation name="GetOrder">
+      <input message="tns:GetOrderRequest"/>
+      <output message="tns:GetOrderResponse"/>
+    </operation>
+
+    <operation name="GetUserOrders">
+      <input message="tns:GetUserOrdersRequest"/>
+      <output message="tns:GetUserOrdersResponse"/>
+    </operation>
+
+    <operation name="UpdateOrderStatus">
+      <input message="tns:UpdateOrderStatusRequest"/>
+      <output message="tns:UpdateOrderStatusResponse"/>
+    </operation>
+
+    <operation name="CancelOrder">
+      <input message="tns:CancelOrderRequest"/>
+      <output message="tns:CancelOrderResponse"/>
+    </operation>
+  </portType>
+
+  <!-- Binding -->
+  <binding name="OrderServiceBinding" type="tns:OrderServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="CreateOrder">
+      <soap:operation soapAction="CreateOrder"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="GetOrder">
+      <soap:operation soapAction="GetOrder"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="GetUserOrders">
+      <soap:operation soapAction="GetUserOrders"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="UpdateOrderStatus">
+      <soap:operation soapAction="UpdateOrderStatus"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="CancelOrder">
+      <soap:operation soapAction="CancelOrder"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+
+  <!-- Service -->
+  <service name="OrderService">
+    <documentation>SmartShop Order Management Service</documentation>
+    <port name="OrderServicePort" binding="tns:OrderServiceBinding">
+      <soap:address location="http://localhost:3002/order"/>
+    </port>
+  </service>
+
+</definitions>

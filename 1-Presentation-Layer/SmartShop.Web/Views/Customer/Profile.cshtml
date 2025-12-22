@@ -1,0 +1,141 @@
+@model SmartShop.Business.DTOs.UpdateUserDto
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5"><i class="bi bi-person-circle"></i> Profil Ayarları</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Customer" asp-action="Dashboard">Panel</a></li>
+                    <li class="breadcrumb-item active">Profil</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Hesap Bilgileri</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle display-1 text-primary"></i>
+                    </div>
+                    <h4 class="mb-1">@ViewBag.UserName</h4>
+                    <p class="text-muted mb-3">@ViewBag.UserEmail</p>
+                    <p class="mb-0">
+                        <span class="badge bg-success">Aktif Üye</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Profil Düzenle</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateProfile" asp-controller="Customer" method="post">
+                        <input type="hidden" asp-for="UserId" />
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label">Ad *</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Adınız" required />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label">Soyad *</label>
+                                <input asp-for="LastName" class="form-control" placeholder="Soyadınız" required />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">E-posta</label>
+                            <input type="email" class="form-control" disabled value="@ViewBag.UserEmail">
+                            <small class="text-muted">E-posta adresi değiştirilemez</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="05XX XXX XX XX" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Değişiklikleri Kaydet
+                        </button>
+                        <a asp-action="Dashboard" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> İptal
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock"></i> Şifre Değiştir</h5>
+                </div>
+                <div class="card-body">
+                    <form id="changePasswordForm" asp-action="ChangePassword" asp-controller="Customer" method="post">
+                        <div class="mb-3">
+                            <label for="CurrentPassword" class="form-label">Mevcut Şifre *</label>
+                            <input type="password" class="form-control" id="CurrentPassword" name="CurrentPassword" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="NewPassword" class="form-label">Yeni Şifre *</label>
+                            <input type="password" class="form-control" id="NewPassword" name="NewPassword" required minlength="6" />
+                            <small class="text-muted">En az 6 karakter olmalıdır</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">Yeni Şifre Tekrar *</label>
+                            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-key"></i> Şifreyi Değiştir
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Şifre eşleşme kontrolü
+        document.getElementById('changePasswordForm')?.addEventListener('submit', function(e) {
+            const newPassword = document.getElementById('NewPassword').value;
+            const confirmPassword = document.getElementById('ConfirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                e.preventDefault();
+                alert('Yeni şifreler eşleşmiyor!');
+                return false;
+            }
+        });
+    </script>
+}

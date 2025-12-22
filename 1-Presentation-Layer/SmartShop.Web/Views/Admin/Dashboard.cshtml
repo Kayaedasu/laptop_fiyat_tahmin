@@ -1,0 +1,155 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4"><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+            <p class="lead text-muted">Hoş geldiniz, @Context.Session.GetString("UserName")</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Toplam Ürün</h6>
+                            <h2 class="card-title mb-0">@ViewBag.TotalProducts</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-primary bg-opacity-75">
+                    <a asp-controller="Admin" asp-action="Products" class="text-white text-decoration-none">
+                        <small>Detayları Gör <i class="bi bi-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Toplam Sipariş</h6>
+                            <h2 class="card-title mb-0">@ViewBag.TotalOrders</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-cart-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-success bg-opacity-75">
+                    <a asp-controller="Admin" asp-action="Orders" class="text-white text-decoration-none">
+                        <small>Detayları Gör <i class="bi bi-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Toplam Kullanıcı</h6>
+                            <h2 class="card-title mb-0">@ViewBag.TotalUsers</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-info bg-opacity-75">
+                    <a asp-controller="Admin" asp-action="Users" class="text-white text-decoration-none">
+                        <small>Detayları Gör <i class="bi bi-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Toplam Gelir</h6>
+                            <h2 class="card-title mb-0">₺@ViewBag.TotalRevenue.ToString("N2")</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-warning bg-opacity-75">
+                    <a href="#" class="text-white text-decoration-none">
+                        <small>Raporları Gör <i class="bi bi-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Hızlı İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-controller="Admin" asp-action="Products" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-plus-circle fs-3 d-block mb-2"></i>
+                                Yeni Ürün Ekle
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Admin" asp-action="Orders" class="btn btn-outline-success w-100 py-3">
+                                <i class="bi bi-list-check fs-3 d-block mb-2"></i>
+                                Siparişleri Yönet
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Admin" asp-action="Users" class="btn btn-outline-info w-100 py-3">
+                                <i class="bi bi-person-plus fs-3 d-block mb-2"></i>
+                                Kullanıcıları Yönet
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary w-100 py-3">
+                                <i class="bi bi-shop fs-3 d-block mb-2"></i>
+                                Mağazayı Gör
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Son Aktiviteler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Son aktiviteler yakında burada görüntülenecek.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

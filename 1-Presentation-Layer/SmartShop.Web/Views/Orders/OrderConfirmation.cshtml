@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Sipariş Onayı";
+    var orderId = ViewBag.OrderId;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 100px;"></i>
+                    </div>
+                    <h1 class="display-4 mb-4">Sipariş Başarıyla Verildi!</h1>
+                    <p class="lead">Satın alımınız için teşekkür ederiz.</p>
+                    <p class="text-muted">Sipariş #<strong>@orderId</strong> numaranız alınmış ve işleme konmuştur.</p>
+                    
+                    <hr class="my-4">
+                    
+                    <p>Kısa süre içinde sipariş detaylarınızı içeren bir onay e-postası alacaksınız.</p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                        <a asp-action="OrderDetails" asp-route-id="@orderId" class="btn btn-primary btn-lg">
+                            <i class="bi bi-eye"></i> Sipariş Detaylarını Gör
+                        </a>
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-shop"></i> Alışverişe Devam Et
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow mt-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-question-circle"></i> Sırada Ne Var?</h5>
+                    <div class="row text-start mt-4">
+                        <div class="col-md-4">
+                            <i class="bi bi-envelope-check text-primary" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Onay E-postası</h6>
+                            <p class="text-muted small">Sipariş onay e-postası alacaksınız.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-box-seam text-primary" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Sipariş İşleme</h6>
+                            <p class="text-muted small">Ürünlerinizi kargoya hazırlayacağız.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-truck text-primary" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Kargo</h6>
+                            <p class="text-muted small">Siparişinizi size ulaşana kadar takip edin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
